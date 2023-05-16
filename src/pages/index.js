@@ -7,19 +7,17 @@ import { code } from "../styles/index.module.css";
 const IndexPage = () => {
 	return (
 		<Layout pageTitle="Code Fingers">
-			<div className={code}>
-				<pre>
-					<code>
-						{`
+			<pre className={code}>
+				<code>
+					{`
 function calculateSum(a, b) {
 	return a + b;
 }
 
 console.log(calculateSum(5, 10));
           `}
-					</code>
-				</pre>
-			</div>
+				</code>
+			</pre>
 		</Layout>
 	);
 };
