@@ -8,11 +8,11 @@ import {
 	navLinkText,
 } from "../styles/header.module.css";
 
-const Header = ({ pageTitle }) => {
+const Header = () => {
 	return (
 		<div className={container}>
 			<div>
-				<h1 className={heading}>{pageTitle}</h1>
+				<h1 className={heading}>Code Fingers</h1>
 			</div>
 
 			<nav>

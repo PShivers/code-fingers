@@ -6,7 +6,7 @@ import { code } from "../styles/index.module.css";
 
 const IndexPage = () => {
 	return (
-		<Layout pageTitle="Code Fingers">
+		<Layout>
 			<pre className={code}>
 				<code>
 					{`
