@@ -6,7 +6,7 @@ import {
 	navLinks,
 	navLinkItem,
 	navLinkText,
-} from "./header.module.css";
+} from "../styles/header.module.css";
 
 const Header = ({ pageTitle }) => {
 	return (

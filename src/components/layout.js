@@ -1,6 +1,7 @@
 import * as React from "react";
 import Header from "./header";
-import { container } from "./layout.module.css";
+import "../styles/global.css";
+import { container } from "../styles/layout.module.css";
 
 const Layout = ({ pageTitle, children }) => {
 	return (
