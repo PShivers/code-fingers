@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 37px;
+  font-family: sans-serif;
+}
+
+.heading {
+  /* font:"Source Code Pro", "Roboto Mono", "Vazirmatn"; */
+  color: #ec4c56;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+}
+
+.nav-link-item {
+  padding-right: 2rem;
+}
+
+.nav-link-text {
+  color: #f6f0e9;
+}
