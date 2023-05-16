@@ -8,28 +8,28 @@ import {
 	navLinkText,
 } from "./header.module.css";
 
-const Header = () => {
+const Header = ({ pageTitle }) => {
 	return (
 		<div className={container}>
 			<div>
-				<h1 className={heading}>Code Fingers</h1>
+				<h1 className={heading}>{pageTitle}</h1>
 			</div>
 
 			<nav>
 				<ul className={navLinks}>
 					<li className={navLinkItem}>
 						<Link to="/" className={navLinkText}>
-							Home
+							home
 						</Link>
 					</li>
 					<li className={navLinkItem}>
 						<Link to="/about" className={navLinkText}>
-							About
+							about
 						</Link>
 					</li>
 					<li className={navLinkItem}>
-						<Link to="/blog" className={navLinkText}>
-							Settings
+						<Link to="/settings" className={navLinkText}>
+							settings
 						</Link>
 					</li>
 				</ul>
