@@ -1,3 +1,5 @@
+# [Deployed site](https://codefingersmain.gatsbyjs.io/)
+
 # Code Fingers
 
 Welcome to Code Fingers, a project inspired by the wonderful site [Monkey Type](https://monkeytype.com/). While Monkey Type is a fantastic tool for improving typing skills, it may not provide a fully immersive experience for typing actual code. Code Fingers aims to bridge that gap by offering a typing practice platform that is specifically tailored to code blocks.
