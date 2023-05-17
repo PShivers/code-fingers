@@ -1,4 +1,5 @@
 .code{
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,14 +8,35 @@
   font-size: 2rem;
 }
 
-#caret {
+input{
+  z-index: -1;
+}
+
+.active{
+  /* position: absolute; */
+}
+
+.active::before {
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 1.2rem;
+  top: 0px;
+  content: "";
   width: 2px;
-  background-color: #f6f0e9;
-  animation: caretFlash 0.8s infinite;
+  height: 2.5rem;
+  background: #ec7fff;
+  display: inline-block;
+  animation: 1s caretFlash step-end infinite;
+}
+
+.correct{
+  color:#f6f0e9;
+}
+
+.incorrect{
+  color:#ec4c56;
+}
+
+.untyped{
+  color:gray;
 }
 
 @keyframes caretFlash {
@@ -28,4 +50,5 @@
     opacity: 1;
   }
 }
+
 

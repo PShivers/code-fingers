@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Layout from "../components/layout";
 import Seo from "../components/seo";
-import { code } from "../styles/index.module.css";
+import {
+	code,
+	correct,
+	incorrect,
+	untyped,
+	caret,
+	input,
+	active,
+} from "../styles/index.module.css";
 
 const IndexPage = () => {
 	const codeString = `function myFunction(){
     return "this is my function";
-  }`;
+	}`;
 
 	const [codeArr, setCodeArr] = useState(
 		getArrayOfObjectsFromString(codeString)
 	);
 	const [userInput, setUserInput] = useState("");
+	const hiddenInputRef = useRef(null);
 
 	function getArrayOfObjectsFromString(str) {
 		return [...str].map((letter) => ({
@@ -43,49 +52,64 @@ const IndexPage = () => {
 		}
 
 		setCodeArr(updatedCodeArr);
+
+		hiddenInputRef.current.value = newUserInput;
+	};
+
+	const handleCodeBlockFocus = () => {
+		console.log("focused");
+		hiddenInputRef.current.focus();
 	};
 
 	return (
 		<Layout>
-			<pre className={code}>
+			<div id="caret" className={caret}></div>
+			<pre
+				className={code}
+				onFocus={handleCodeBlockFocus}
+				role="textbox"
+				tabIndex="0"
+			>
 				<code>
-					{codeArr.map((letter, index) => (
-						<span
-							key={index}
-							className={`code-letter ${
-								letter.correct !== null
-									? letter.correct
-										? "correct"
-										: "incorrect"
-									: "untyped"
-							}`}
-							style={{
-								color:
+					{codeArr.map((letter, index) => {
+						let isActive = false;
+						if (index === 0 && codeArr[index].correct === null) {
+							isActive = true;
+						} else if (
+							index > 0 &&
+							index < codeArr.length - 1 &&
+							codeArr[index - 1].correct !== null &&
+							codeArr[index].correct === null
+						) {
+							isActive = true;
+						}
+
+						return (
+							<span
+								key={index}
+								className={`code-letter ${
 									letter.correct !== null
 										? letter.correct
-											? "#f6f0e9"
-											: "#ec4c56"
-										: "gray",
-							}}
-						>
-							{letter.value}
-						</span>
-					))}
+											? correct
+											: incorrect
+										: untyped
+								} ${isActive ? active : ""}`}
+							>
+								{letter.value}
+							</span>
+						);
+					})}
 				</code>
 			</pre>
-			<div
-				id="caret"
-				className="default hidden"
-				style={{
-					fontSize: "1.5rem",
-					animationName: "caretFlashSmooth",
-					opacity: 1,
-					display: "block",
-					top: "3.6px",
-					left: "5px",
-				}}
-			></div>
-			<input onChange={handleChange} value={userInput} />
+
+			<input
+				autoFocus
+				ref={hiddenInputRef}
+				type="text"
+				onChange={handleChange}
+				value={userInput}
+				style={input}
+			/>
 		</Layout>
 	);
 };
