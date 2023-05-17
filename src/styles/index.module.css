@@ -6,3 +6,26 @@
   color: #596172;
   font-size: 2rem;
 }
+
+#caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.2rem;
+  width: 2px;
+  background-color: #f6f0e9;
+  animation: caretFlash 0.8s infinite;
+}
+
+@keyframes caretFlash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
