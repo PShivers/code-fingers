@@ -6,7 +6,6 @@ import {
 	correct,
 	incorrect,
 	untyped,
-	caret,
 	input,
 	active,
 	indent,
@@ -64,9 +63,7 @@ const IndexPage = () => {
 
 	return (
 		<Layout>
-			<div id="caret" className={caret}></div>
-
-			<code className={code}>
+			<code className={code} onFocus={handleCodeBlockFocus}>
 				<div className="code-container">
 					{codeArr.map((letter, index) => {
 						let isActive = false;
@@ -98,12 +95,12 @@ const IndexPage = () => {
 
 						let classNames = "code-letter";
 						if (letter.correct !== null) {
-							classNames += letter.correct ? " correct" : " incorrect";
+							classNames += letter.correct ? ` ${correct}` : ` ${incorrect}`;
 						} else {
-							classNames += " untyped";
+							classNames += ` ${untyped}`;
 						}
 						if (isActive) {
-							classNames += " active";
+							classNames += ` ${active}`;
 						}
 
 						return (

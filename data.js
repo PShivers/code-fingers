@@ -1,5 +1,5 @@
 export const codeBlocks = [
-	`^function myFunction(){^~return "this is my function";^}`,
+	`^function myFunction() {^~return "this is my function";^}`,
 	`function add(a, b) {^~return a + b;^}`,
 	`function multiply(a, b) {^~return a * b;^}`,
 	`function subtract(a, b) {^~return a - b;^}`,
