@@ -10,14 +10,11 @@ import {
 	input,
 	active,
 } from "../styles/index.module.css";
+import { codeBlocks } from "../../data";
 
 const IndexPage = () => {
-	const codeString = `function myFunction(){
-    return "this is my function";
-	}`;
-
 	const [codeArr, setCodeArr] = useState(
-		getArrayOfObjectsFromString(codeString)
+		getArrayOfObjectsFromString(codeBlocks[0])
 	);
 	const [userInput, setUserInput] = useState("");
 	const hiddenInputRef = useRef(null);
