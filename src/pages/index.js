@@ -11,53 +11,113 @@ import {
 	indent,
 } from "../styles/index.module.css";
 import { codeBlocks } from "../../data";
+// &#9166;
 
 const IndexPage = () => {
 	const randomIndex = Math.floor(Math.random() * codeBlocks.length);
 	const randomCodeBlock = codeBlocks[randomIndex];
 
-	const [codeArr, setCodeArr] = useState(
-		getArrayOfObjectsFromString(randomCodeBlock)
-	);
+	const [codeBlock, setCodeBlock] = useState(createCodeRows(randomCodeBlock));
 	const [userInput, setUserInput] = useState("");
+	const [rowIndex, setRowIndex] = useState(0);
+	const [charIndex, setCharIndex] = useState(0);
 	const hiddenInputRef = useRef(null);
 
-	function getArrayOfObjectsFromString(str) {
-		return [...str].map((letter) => ({
-			value: letter,
-			correct: null,
-		}));
+	function createCodeRows(str) {
+		const rows = str.split("^").map((rowChars, index, array) => {
+			const isLastRow = index === array.length - 1;
+			let indentLevel = 0;
+			let chars = [...rowChars];
+
+			// Count the occurrence of "~" for indentation
+			if (!isLastRow) {
+				indentLevel = chars.filter((char) => char === "~").length;
+			}
+
+			// Remove "~" characters
+			chars = chars.filter((char) => char !== "~");
+
+			// Create objects for each character
+			chars = chars.map((char) => ({
+				value: char,
+				correct: null,
+			}));
+
+			if (!isLastRow) {
+				chars.push({
+					value: String.fromCharCode(9166),
+					correct: null,
+				});
+			}
+
+			return {
+				chars,
+				complete: false,
+				indentLevel,
+			};
+		});
+
+		const rowCount = rows.length;
+
+		return { rows, rowCount };
 	}
 
 	const handleChange = (e) => {
 		const newUserInput = e.target.value;
 		setUserInput(newUserInput);
+		const updatedCodeBlock = { ...codeBlock }; // Copy the codeBlock object
+		let { rows } = updatedCodeBlock;
+		//handle enter
 
-		const updatedCodeArr = [];
-		for (let index = 0; index < codeArr.length; index++) {
-			const isTyped = index < newUserInput.length;
-			const letter = codeArr[index];
-			if (isTyped) {
-				const isCorrect = letter.value === newUserInput[index];
-				updatedCodeArr.push({
-					...letter,
-					correct: isCorrect,
-				});
-			} else {
-				updatedCodeArr.push({
-					...letter,
-					correct: null,
-				});
+		// Handle backspace press
+		if (e.nativeEvent.inputType === "deleteContentBackward") {
+			if (charIndex > 0) {
+				setCharIndex((prevCharIndex) => prevCharIndex - 1); // Decrement charIndex
+				rows[rowIndex].chars[charIndex - 1].correct = null; // Set correct field to null for the previous char object
+			}
+		} else {
+			// Check if the provided row and char indices are within the valid range
+			if (
+				rowIndex >= 0 &&
+				rowIndex < rows.length &&
+				charIndex >= 0 &&
+				charIndex < rows[rowIndex].chars.length
+			) {
+				const updatedRow = [...rows[rowIndex].chars]; // Copy the row's chars array
+
+				// Check if the new userInput matches the char value at the specified indices
+				if (newUserInput[charIndex] === updatedRow[charIndex].value) {
+					// If yes, set the correct field to true
+					updatedRow[charIndex].correct = true;
+				} else {
+					// If no, set the correct field to false
+					updatedRow[charIndex].correct = false;
+				}
+
+				// Update the row with the modified chars array
+				rows[rowIndex].chars = updatedRow;
+			}
+
+			//while charIndex is less than length of the row increment charIndex
+			if (charIndex < rows[rowIndex].chars.length) {
+				setCharIndex((prevCharIndex) => prevCharIndex + 1); // Increment charIndex using the previous value
+			} else if (
+				e.key === "Enter" &&
+				rowIndex < rows.length - 1 &&
+				charIndex === rows[rowIndex].chars.length - 1
+			) {
+				setRowIndex((prevRowIndex) => prevRowIndex + 1); // Increment rowIndex
+				setCharIndex(0); // Reset charIndex to the beginning of the next row
 			}
 		}
 
-		setCodeArr(updatedCodeArr);
-
+		setCodeBlock(updatedCodeBlock);
 		hiddenInputRef.current.value = newUserInput;
+
+		// console.table(codeBlock.rows[rowIndex].chars);
 	};
 
 	const handleCodeBlockFocus = () => {
-		console.log("focused");
 		hiddenInputRef.current.focus();
 	};
 
@@ -70,50 +130,33 @@ const IndexPage = () => {
 				tabIndex="0"
 			>
 				<div className="code-container">
-					{codeArr.map((letter, index) => {
-						let isActive = false;
-						let isNewRow = false;
-						let isIndentation = false;
-
-						if (letter.value === "^") {
-							isNewRow = true;
-						} else if (letter.value === "~") {
-							isIndentation = true;
-						} else if (index === 0 && codeArr[index].correct === null) {
-							isActive = true;
-						} else if (
-							index > 0 &&
-							index < codeArr.length - 1 &&
-							codeArr[index - 1].correct !== null &&
-							codeArr[index].correct === null
-						) {
-							isActive = true;
-						}
-
-						if (isNewRow) {
-							return <div key={index} className="code-row" />;
-						}
-
-						if (isIndentation) {
-							return <span key={index} className={indent} />;
-						}
-
-						let classNames = "code-letter";
-						if (letter.correct !== null) {
-							classNames += letter.correct ? ` ${correct}` : ` ${incorrect}`;
-						} else {
-							classNames += ` ${untyped}`;
-						}
-						if (isActive) {
-							classNames += ` ${active}`;
-						}
-
-						return (
-							<span key={index} className={classNames}>
-								{letter.value}
-							</span>
-						);
-					})}
+					{codeBlock.rows.map((row, rowIndex) => (
+						<div key={rowIndex}>
+							{[...Array(row.indentLevel)].map((_, index) => (
+								<span key={index} className={indent}></span>
+							))}
+							{row.chars.map((char, charIndex) => {
+								let classNames = "code-letter";
+								if (char.correct !== null) {
+									classNames += char.correct ? ` ${correct}` : ` ${incorrect}`;
+								} else {
+									classNames += ` ${untyped}`;
+								}
+								if (
+									rowIndex === 0 &&
+									charIndex === 0 &&
+									char.correct === null
+								) {
+									classNames += ` ${active}`;
+								}
+								return (
+									<span key={charIndex} className={classNames}>
+										{char.value}
+									</span>
+								);
+							})}
+						</div>
+					))}
 				</div>
 			</code>
 
