@@ -39,6 +39,11 @@ input{
   color:gray;
 }
 
+.indent{
+  display: inline-block;
+  width: 2ch;
+}
+
 @keyframes caretFlash {
   0% {
     opacity: 1;

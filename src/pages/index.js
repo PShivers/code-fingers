@@ -9,12 +9,16 @@ import {
 	caret,
 	input,
 	active,
+	indent,
 } from "../styles/index.module.css";
 import { codeBlocks } from "../../data";
 
 const IndexPage = () => {
+	const randomIndex = Math.floor(Math.random() * codeBlocks.length);
+	const randomCodeBlock = codeBlocks[randomIndex];
+
 	const [codeArr, setCodeArr] = useState(
-		getArrayOfObjectsFromString(codeBlocks[0])
+		getArrayOfObjectsFromString(randomCodeBlock)
 	);
 	const [userInput, setUserInput] = useState("");
 	const hiddenInputRef = useRef(null);
@@ -61,16 +65,19 @@ const IndexPage = () => {
 	return (
 		<Layout>
 			<div id="caret" className={caret}></div>
-			<pre
-				className={code}
-				onFocus={handleCodeBlockFocus}
-				role="textbox"
-				tabIndex="0"
-			>
-				<code>
+
+			<code className={code}>
+				<div className="code-container">
 					{codeArr.map((letter, index) => {
 						let isActive = false;
-						if (index === 0 && codeArr[index].correct === null) {
+						let isNewRow = false;
+						let isIndentation = false;
+
+						if (letter.value === "^") {
+							isNewRow = true;
+						} else if (letter.value === "~") {
+							isIndentation = true;
+						} else if (index === 0 && codeArr[index].correct === null) {
 							isActive = true;
 						} else if (
 							index > 0 &&
@@ -81,23 +88,32 @@ const IndexPage = () => {
 							isActive = true;
 						}
 
+						if (isNewRow) {
+							return <div key={index} className="code-row" />;
+						}
+
+						if (isIndentation) {
+							return <span key={index} className={indent} />;
+						}
+
+						let classNames = "code-letter";
+						if (letter.correct !== null) {
+							classNames += letter.correct ? " correct" : " incorrect";
+						} else {
+							classNames += " untyped";
+						}
+						if (isActive) {
+							classNames += " active";
+						}
+
 						return (
-							<span
-								key={index}
-								className={`code-letter ${
-									letter.correct !== null
-										? letter.correct
-											? correct
-											: incorrect
-										: untyped
-								} ${isActive ? active : ""}`}
-							>
+							<span key={index} className={classNames}>
 								{letter.value}
 							</span>
 						);
 					})}
-				</code>
-			</pre>
+				</div>
+			</code>
 
 			<input
 				autoFocus
