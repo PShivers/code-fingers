@@ -14,6 +14,11 @@
 
 .active{
   /* position: absolute; */
+  visibility: visible;
+}
+
+.hidden{
+  visibility: hidden;
 }
 
 .active::before {
