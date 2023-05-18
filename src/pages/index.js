@@ -63,7 +63,12 @@ const IndexPage = () => {
 
 	return (
 		<Layout>
-			<code className={code} onFocus={handleCodeBlockFocus}>
+			<code
+				className={code}
+				onFocus={handleCodeBlockFocus}
+				role="textbox"
+				tabIndex="0"
+			>
 				<div className="code-container">
 					{codeArr.map((letter, index) => {
 						let isActive = false;
@@ -118,7 +123,7 @@ const IndexPage = () => {
 				type="text"
 				onChange={handleChange}
 				value={userInput}
-				style={input}
+				className={input}
 			/>
 		</Layout>
 	);
