@@ -8,7 +8,7 @@
   font-size: 2rem;
 }
 
-input{
+.input{
   z-index: -1;
 }
 
@@ -37,6 +37,11 @@ input{
 
 .untyped{
   color:gray;
+}
+
+.indent{
+  display: inline-block;
+  width: 2ch;
 }
 
 @keyframes caretFlash {
