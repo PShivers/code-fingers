@@ -8,10 +8,10 @@ import {
 	untyped,
 	input,
 	active,
+	hidden,
 	indent,
 } from "../styles/index.module.css";
 import { codeBlocks } from "../../data";
-// &#9166;
 
 const IndexPage = () => {
 	const randomIndex = Math.floor(Math.random() * codeBlocks.length);
@@ -43,6 +43,7 @@ const IndexPage = () => {
 				correct: null,
 			}));
 
+			// Push enter symbol into chars array
 			if (!isLastRow) {
 				chars.push({
 					value: String.fromCharCode(9166),
@@ -130,30 +131,40 @@ const IndexPage = () => {
 				tabIndex="0"
 			>
 				<div className="code-container">
-					{codeBlock.rows.map((row, rowIndex) => (
-						<div key={rowIndex}>
+					{codeBlock.rows.map((row, rIndex) => (
+						<div key={rIndex}>
 							{[...Array(row.indentLevel)].map((_, index) => (
 								<span key={index} className={indent}></span>
 							))}
-							{row.chars.map((char, charIndex) => {
+
+							{row.chars.map((char, cIndex) => {
+								let isActive = rowIndex === rIndex && charIndex == cIndex;
+								let isReturn = char.value === String.fromCharCode(9166);
 								let classNames = "code-letter";
+
 								if (char.correct !== null) {
 									classNames += char.correct ? ` ${correct}` : ` ${incorrect}`;
 								} else {
 									classNames += ` ${untyped}`;
 								}
-								if (
-									rowIndex === 0 &&
-									charIndex === 0 &&
-									char.correct === null
-								) {
+
+								if (isActive) {
 									classNames += ` ${active}`;
 								}
-								return (
-									<span key={charIndex} className={classNames}>
-										{char.value}
-									</span>
-								);
+
+								if (!isActive && isReturn) {
+									return (
+										<span key={cIndex} className={`${classNames} ${hidden}`}>
+											{char.value}
+										</span>
+									);
+								} else {
+									return (
+										<span key={cIndex} className={classNames}>
+											{char.value}
+										</span>
+									);
+								}
 							})}
 						</div>
 					))}
