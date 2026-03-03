@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "../components/layout";
 import Seo from "../components/seo";
 import {
@@ -10,6 +10,8 @@ import {
 	active,
 	hidden,
 	indent,
+	caretEl,
+	caretFocused,
 	results,
 	statsRow,
 	stat,
@@ -39,7 +41,22 @@ const IndexPage = () => {
 	const [charIndex, setCharIndex] = useState(0);
 	const [resultStats, setResultStats] = useState(null);
 	const hiddenInputRef = useRef(null);
+	const codeRef = useRef(null);
 	const startTime = useRef(null);
+	const [caretPos, setCaretPos] = useState(null);
+	const [isFocused, setIsFocused] = useState(false);
+
+	useEffect(() => {
+		const activeEl = codeRef.current?.querySelector("[data-active]");
+		if (activeEl && codeRef.current) {
+			const containerRect = codeRef.current.getBoundingClientRect();
+			const activeRect = activeEl.getBoundingClientRect();
+			setCaretPos({
+				top: activeRect.top - containerRect.top,
+				left: activeRect.left - containerRect.left,
+			});
+		}
+	}, [rowIndex, charIndex]);
 
 	function createCodeRows(str) {
 		const rows = str.split("^").map((rowChars, index, array) => {
@@ -197,11 +214,18 @@ const IndexPage = () => {
 				</div>
 			) : (
 				<code
+					ref={codeRef}
 					className={code}
 					onFocus={handleCodeBlockFocus}
 					role="textbox"
 					tabIndex="0"
 				>
+					{caretPos && (
+						<div
+							className={`${caretEl}${isFocused ? ` ${caretFocused}` : ""}`}
+							style={{ top: `${caretPos.top}px`, left: `${caretPos.left}px` }}
+						/>
+					)}
 					<div className="code-container">
 						{codeBlock.rows.map((row, rIndex) => (
 							<div key={rIndex}>
@@ -232,7 +256,7 @@ const IndexPage = () => {
 										);
 									} else {
 										return (
-											<span key={cIndex} className={classNames}>
+											<span key={cIndex} className={classNames} {...(isActive ? { "data-active": true } : {})}>
 												{char.value}
 											</span>
 										);
@@ -250,6 +274,8 @@ const IndexPage = () => {
 				type="text"
 				onChange={handleChange}
 				onKeyDown={handleKeyDown}
+				onFocus={() => setIsFocused(true)}
+				onBlur={() => setIsFocused(false)}
 				value={userInput}
 				className={input}
 			/>

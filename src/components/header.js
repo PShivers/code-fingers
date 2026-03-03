@@ -15,6 +15,8 @@ import {
 	formGroup,
 	formLabel,
 	select,
+	modalText,
+	modalContent,
 } from "../styles/header.module.css";
 
 const LANGUAGES = [
@@ -70,7 +72,7 @@ const applyTheme = (themeKey) => {
 };
 
 const Header = () => {
-	const [modalOpen, setModalOpen] = useState(false);
+	const [activeModal, setActiveModal] = useState(null);
 	const [selectedLang, setSelectedLang] = useState("javascript");
 	const [selectedTheme, setSelectedTheme] = useState("default");
 
@@ -83,13 +85,13 @@ const Header = () => {
 	}, []);
 
 	useEffect(() => {
-		if (!modalOpen) return;
+		if (!activeModal) return;
 		const handleKeyDown = (e) => {
-			if (e.key === "Escape") setModalOpen(false);
+			if (e.key === "Escape") setActiveModal(null);
 		};
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [modalOpen]);
+	}, [activeModal]);
 
 	const handleLangChange = (e) => {
 		const lang = e.target.value;
@@ -119,12 +121,12 @@ const Header = () => {
 							</Link>
 						</li>
 						<li className={navLinkItem}>
-							<Link to="/about" className={navLinkText}>
+							<button className={settingsBtn} onClick={() => setActiveModal("about")}>
 								about
-							</Link>
+							</button>
 						</li>
 						<li>
-							<button className={settingsBtn} onClick={() => setModalOpen(true)}>
+							<button className={settingsBtn} onClick={() => setActiveModal("settings")}>
 								settings
 							</button>
 						</li>
@@ -132,45 +134,59 @@ const Header = () => {
 				</nav>
 			</div>
 
-			{modalOpen && (
-				<div className={overlay} onClick={() => setModalOpen(false)}>
+			{activeModal && (
+				<div className={overlay} onClick={() => setActiveModal(null)}>
 					<div className={modal} onClick={(e) => e.stopPropagation()}>
 						<div className={modalHeader}>
-							<span className={modalTitle}>Settings</span>
-							<button className={closeBtn} onClick={() => setModalOpen(false)}>
+							<span className={modalTitle}>{activeModal}</span>
+							<button className={closeBtn} onClick={() => setActiveModal(null)}>
 								&times;
 							</button>
 						</div>
 
-						<div className={formGroup}>
-							<label className={formLabel}>Language</label>
-							<select
-								className={select}
-								value={selectedLang}
-								onChange={handleLangChange}
-							>
-								{LANGUAGES.map(({ key, label }) => (
-									<option key={key} value={key}>
-										{label}
-									</option>
-								))}
-							</select>
-						</div>
+						{activeModal === "about" && (
+							<div className={modalContent}>
+								<p className={modalText}>
+									Codexterity is a typing practice app for code — like MonkeyType,
+									but for real programming snippets. Type through code blocks and
+									build muscle memory for the patterns you actually use.
+								</p>
+							</div>
+						)}
 
-						<div className={formGroup}>
-							<label className={formLabel}>Theme</label>
-							<select
-								className={select}
-								value={selectedTheme}
-								onChange={handleThemeChange}
-							>
-								{THEME_OPTIONS.map(({ key, label }) => (
-									<option key={key} value={key}>
-										{label}
-									</option>
-								))}
-							</select>
-						</div>
+						{activeModal === "settings" && (
+							<>
+								<div className={formGroup}>
+									<label className={formLabel}>Language</label>
+									<select
+										className={select}
+										value={selectedLang}
+										onChange={handleLangChange}
+									>
+										{LANGUAGES.map(({ key, label }) => (
+											<option key={key} value={key}>
+												{label}
+											</option>
+										))}
+									</select>
+								</div>
+
+								<div className={formGroup}>
+									<label className={formLabel}>Theme</label>
+									<select
+										className={select}
+										value={selectedTheme}
+										onChange={handleThemeChange}
+									>
+										{THEME_OPTIONS.map(({ key, label }) => (
+											<option key={key} value={key}>
+												{label}
+											</option>
+										))}
+									</select>
+								</div>
+							</>
+						)}
 					</div>
 				</div>
 			)}

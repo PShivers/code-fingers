@@ -13,7 +13,6 @@
 }
 
 .active{
-  position: relative;
   visibility: visible;
 }
 
@@ -21,15 +20,18 @@
   visibility: hidden;
 }
 
-.active::before {
+.caretEl {
   position: absolute;
-  top: 0px;
-  content: "";
   width: 2px;
   height: 2.5rem;
   background: var(--caret);
-  display: inline-block;
+  pointer-events: none;
+  transition: left 0.08s ease, top 0.08s ease;
   animation: 1s caretFlash step-end infinite;
+}
+
+.caretFocused {
+  animation: none;
 }
 
 .correct{
