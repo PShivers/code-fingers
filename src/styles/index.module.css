@@ -13,7 +13,7 @@
 }
 
 .active{
-  /* position: absolute; */
+  position: relative;
   visibility: visible;
 }
 

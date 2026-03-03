@@ -101,14 +101,7 @@ const IndexPage = () => {
 
 			//while charIndex is less than length of the row increment charIndex
 			if (charIndex < rows[rowIndex].chars.length) {
-				setCharIndex((prevCharIndex) => prevCharIndex + 1); // Increment charIndex using the previous value
-			} else if (
-				e.key === "Enter" &&
-				rowIndex < rows.length - 1 &&
-				charIndex === rows[rowIndex].chars.length - 1
-			) {
-				setRowIndex((prevRowIndex) => prevRowIndex + 1); // Increment rowIndex
-				setCharIndex(0); // Reset charIndex to the beginning of the next row
+				setCharIndex((prevCharIndex) => prevCharIndex + 1);
 			}
 		}
 
@@ -116,6 +109,22 @@ const IndexPage = () => {
 		hiddenInputRef.current.value = newUserInput;
 
 		// console.table(codeBlock.rows[rowIndex].chars);
+	};
+
+	const handleKeyDown = (e) => {
+		if (e.key === "Enter") {
+			const { rows } = codeBlock;
+			const returnCharIndex = rows[rowIndex].chars.length - 1;
+			if (charIndex === returnCharIndex && rowIndex < rows.length - 1) {
+				const updatedCodeBlock = { ...codeBlock };
+				updatedCodeBlock.rows[rowIndex].chars[returnCharIndex].correct = true;
+				setCodeBlock(updatedCodeBlock);
+				setRowIndex((prev) => prev + 1);
+				setCharIndex(0);
+				setUserInput("");
+				hiddenInputRef.current.value = "";
+			}
+		}
 	};
 
 	const handleCodeBlockFocus = () => {
@@ -176,6 +185,7 @@ const IndexPage = () => {
 				ref={hiddenInputRef}
 				type="text"
 				onChange={handleChange}
+				onKeyDown={handleKeyDown}
 				value={userInput}
 				className={input}
 			/>
