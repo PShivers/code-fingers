@@ -9,7 +9,7 @@ const About = () => {
 			<div className={about}>
 				<h1>About</h1>
 				<p>
-					Code Fingers is a typing practice app for code — like MonkeyType, but
+					Codexterity is a typing practice app for code — like MonkeyType, but
 					for real programming snippets. Type through JavaScript code blocks and
 					build muscle memory for the patterns you actually use.
 				</p>

@@ -15,7 +15,7 @@ No linting or testing is configured.
 
 ## Architecture
 
-**Code Fingers** is a Gatsby/React typing practice app for coding snippets, similar to MonkeyType but for code.
+**Codexterity** is a Gatsby/React typing practice app for coding snippets, similar to MonkeyType but for code.
 
 ### Data Flow
 

@@ -19,12 +19,21 @@ import {
 } from "../styles/index.module.css";
 import { codeBlocks } from "../../data";
 
-const IndexPage = () => {
-	const randomIndex = Math.floor(Math.random() * codeBlocks.length);
-	const randomCodeBlock = codeBlocks[randomIndex];
+const getSnippets = () => {
+	try {
+		const lang = localStorage.getItem("codexterity_language") || "javascript";
+		return codeBlocks[lang] || codeBlocks.javascript;
+	} catch {
+		return codeBlocks.javascript;
+	}
+};
 
-	const [currentSnippet, setCurrentSnippet] = useState(randomCodeBlock);
-	const [codeBlock, setCodeBlock] = useState(createCodeRows(randomCodeBlock));
+const IndexPage = () => {
+	const initialSnippets = getSnippets();
+	const initialSnippet = initialSnippets[Math.floor(Math.random() * initialSnippets.length)];
+
+	const [currentSnippet, setCurrentSnippet] = useState(initialSnippet);
+	const [codeBlock, setCodeBlock] = useState(createCodeRows(initialSnippet));
 	const [userInput, setUserInput] = useState("");
 	const [rowIndex, setRowIndex] = useState(0);
 	const [charIndex, setCharIndex] = useState(0);
@@ -155,8 +164,8 @@ const IndexPage = () => {
 	const handleTryAgain = () => resetWith(currentSnippet);
 
 	const handleNext = () => {
-		const newIndex = Math.floor(Math.random() * codeBlocks.length);
-		resetWith(codeBlocks[newIndex]);
+		const snippets = getSnippets();
+		resetWith(snippets[Math.floor(Math.random() * snippets.length)]);
 	};
 
 	const handleCodeBlockFocus = () => {

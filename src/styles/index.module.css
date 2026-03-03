@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  color: #596172;
+  color: var(--dim);
   font-size: 2rem;
 }
 
@@ -27,21 +27,21 @@
   content: "";
   width: 2px;
   height: 2.5rem;
-  background: #ec7fff;
+  background: var(--caret);
   display: inline-block;
   animation: 1s caretFlash step-end infinite;
 }
 
 .correct{
-  color:#f6f0e9;
+  color: var(--text);
 }
 
 .incorrect{
-  color:#ec4c56;
+  color: var(--err);
 }
 
 .untyped{
-  color:gray;
+  color: var(--dim);
 }
 
 .indent{
@@ -70,21 +70,21 @@
 
 .statValue {
   font-size: 4rem;
-  color: #ec7fff;
+  color: var(--caret);
   font-family: monospace;
 }
 
 .statLabel {
   font-size: 0.8rem;
-  color: #596172;
+  color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 
 .tryAgain {
   background: none;
-  border: 1px solid #596172;
-  color: #f6f0e9;
+  border: 1px solid var(--dim);
+  color: var(--text);
   padding: 0.4rem 1.5rem;
   cursor: pointer;
   font-size: 1rem;
@@ -92,8 +92,8 @@
 }
 
 .tryAgain:hover {
-  border-color: #ec7fff;
-  color: #ec7fff;
+  border-color: var(--caret);
+  color: var(--caret);
 }
 
 @keyframes caretFlash {
@@ -107,5 +107,3 @@
     opacity: 1;
   }
 }
-
-

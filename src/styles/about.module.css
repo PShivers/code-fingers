@@ -1,4 +1,4 @@
 .about{
-  color: #f6f0e9;
+  color: var(--text);
   padding: 10px;
 }

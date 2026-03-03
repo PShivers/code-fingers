@@ -1,3 +1,12 @@
+:root {
+  --bg: #242933;
+  --text: #f6f0e9;
+  --err: #ec4c56;
+  --caret: #ec7fff;
+  --dim: #596172;
+  --accent: #ec4c56;
+}
+
 html, body, #___gatsby {
   height: 100%;
 }
@@ -11,9 +20,8 @@ body {
 }
 
 #gatsby-focus-wrapper {
-  background-color: #242933;
-  /* height: 100vh; */
+  background-color: var(--bg);
   width: 100vw;
-  margin:0 auto;
+  margin: 0 auto;
   height: 100%;
 }
