@@ -10,6 +10,12 @@ import {
 	active,
 	hidden,
 	indent,
+	results,
+	statsRow,
+	stat,
+	statValue,
+	statLabel,
+	tryAgain,
 } from "../styles/index.module.css";
 import { codeBlocks } from "../../data";
 
@@ -17,11 +23,14 @@ const IndexPage = () => {
 	const randomIndex = Math.floor(Math.random() * codeBlocks.length);
 	const randomCodeBlock = codeBlocks[randomIndex];
 
+	const [currentSnippet, setCurrentSnippet] = useState(randomCodeBlock);
 	const [codeBlock, setCodeBlock] = useState(createCodeRows(randomCodeBlock));
 	const [userInput, setUserInput] = useState("");
 	const [rowIndex, setRowIndex] = useState(0);
 	const [charIndex, setCharIndex] = useState(0);
+	const [resultStats, setResultStats] = useState(null);
 	const hiddenInputRef = useRef(null);
+	const startTime = useRef(null);
 
 	function createCodeRows(str) {
 		const rows = str.split("^").map((rowChars, index, array) => {
@@ -64,51 +73,55 @@ const IndexPage = () => {
 	}
 
 	const handleChange = (e) => {
+		if (!startTime.current) {
+			startTime.current = Date.now();
+		}
+
 		const newUserInput = e.target.value;
 		setUserInput(newUserInput);
-		const updatedCodeBlock = { ...codeBlock }; // Copy the codeBlock object
+		const updatedCodeBlock = { ...codeBlock };
 		let { rows } = updatedCodeBlock;
-		//handle enter
 
 		// Handle backspace press
 		if (e.nativeEvent.inputType === "deleteContentBackward") {
 			if (charIndex > 0) {
-				setCharIndex((prevCharIndex) => prevCharIndex - 1); // Decrement charIndex
-				rows[rowIndex].chars[charIndex - 1].correct = null; // Set correct field to null for the previous char object
+				setCharIndex((prevCharIndex) => prevCharIndex - 1);
+				rows[rowIndex].chars[charIndex - 1].correct = null;
 			}
 		} else {
-			// Check if the provided row and char indices are within the valid range
 			if (
 				rowIndex >= 0 &&
 				rowIndex < rows.length &&
 				charIndex >= 0 &&
 				charIndex < rows[rowIndex].chars.length
 			) {
-				const updatedRow = [...rows[rowIndex].chars]; // Copy the row's chars array
-
-				// Check if the new userInput matches the char value at the specified indices
-				if (newUserInput[charIndex] === updatedRow[charIndex].value) {
-					// If yes, set the correct field to true
-					updatedRow[charIndex].correct = true;
-				} else {
-					// If no, set the correct field to false
-					updatedRow[charIndex].correct = false;
-				}
-
-				// Update the row with the modified chars array
+				const updatedRow = [...rows[rowIndex].chars];
+				updatedRow[charIndex].correct =
+					newUserInput[charIndex] === updatedRow[charIndex].value;
 				rows[rowIndex].chars = updatedRow;
 			}
 
-			//while charIndex is less than length of the row increment charIndex
 			if (charIndex < rows[rowIndex].chars.length) {
 				setCharIndex((prevCharIndex) => prevCharIndex + 1);
+
+				// Detect completion: just typed the last char of the last row
+				const isLastRow = rowIndex === rows.length - 1;
+				const isLastChar = charIndex === rows[rowIndex].chars.length - 1;
+				if (isLastRow && isLastChar) {
+					const elapsed = (Date.now() - startTime.current) / 1000 / 60;
+					const allChars = rows.flatMap((r) => r.chars);
+					const totalChars = allChars.length;
+					const correctChars = allChars.filter((c) => c.correct === true).length;
+					setResultStats({
+						wpm: Math.round(totalChars / 5 / elapsed),
+						accuracy: Math.round((correctChars / totalChars) * 100),
+					});
+				}
 			}
 		}
 
 		setCodeBlock(updatedCodeBlock);
 		hiddenInputRef.current.value = newUserInput;
-
-		// console.table(codeBlock.rows[rowIndex].chars);
 	};
 
 	const handleKeyDown = (e) => {
@@ -127,58 +140,100 @@ const IndexPage = () => {
 		}
 	};
 
+	const resetWith = (snippet) => {
+		setCurrentSnippet(snippet);
+		setCodeBlock(createCodeRows(snippet));
+		setRowIndex(0);
+		setCharIndex(0);
+		setUserInput("");
+		setResultStats(null);
+		startTime.current = null;
+		hiddenInputRef.current.value = "";
+		hiddenInputRef.current.focus();
+	};
+
+	const handleTryAgain = () => resetWith(currentSnippet);
+
+	const handleNext = () => {
+		const newIndex = Math.floor(Math.random() * codeBlocks.length);
+		resetWith(codeBlocks[newIndex]);
+	};
+
 	const handleCodeBlockFocus = () => {
 		hiddenInputRef.current.focus();
 	};
 
 	return (
 		<Layout>
-			<code
-				className={code}
-				onFocus={handleCodeBlockFocus}
-				role="textbox"
-				tabIndex="0"
-			>
-				<div className="code-container">
-					{codeBlock.rows.map((row, rIndex) => (
-						<div key={rIndex}>
-							{[...Array(row.indentLevel)].map((_, index) => (
-								<span key={index} className={indent}></span>
-							))}
-
-							{row.chars.map((char, cIndex) => {
-								let isActive = rowIndex === rIndex && charIndex == cIndex;
-								let isReturn = char.value === String.fromCharCode(9166);
-								let classNames = "code-letter";
-
-								if (char.correct !== null) {
-									classNames += char.correct ? ` ${correct}` : ` ${incorrect}`;
-								} else {
-									classNames += ` ${untyped}`;
-								}
-
-								if (isActive) {
-									classNames += ` ${active}`;
-								}
-
-								if (!isActive && isReturn) {
-									return (
-										<span key={cIndex} className={`${classNames} ${hidden}`}>
-											{char.value}
-										</span>
-									);
-								} else {
-									return (
-										<span key={cIndex} className={classNames}>
-											{char.value}
-										</span>
-									);
-								}
-							})}
+			{resultStats ? (
+				<div className={results}>
+					<div className={statsRow}>
+						<div className={stat}>
+							<span className={statValue}>{resultStats.wpm}</span>
+							<span className={statLabel}>wpm</span>
 						</div>
-					))}
+						<div className={stat}>
+							<span className={statValue}>{resultStats.accuracy}%</span>
+							<span className={statLabel}>accuracy</span>
+						</div>
+					</div>
+					<div className={statsRow}>
+						<button className={tryAgain} onClick={handleTryAgain}>
+							try again
+						</button>
+						<button className={tryAgain} onClick={handleNext}>
+							next
+						</button>
+					</div>
 				</div>
-			</code>
+			) : (
+				<code
+					className={code}
+					onFocus={handleCodeBlockFocus}
+					role="textbox"
+					tabIndex="0"
+				>
+					<div className="code-container">
+						{codeBlock.rows.map((row, rIndex) => (
+							<div key={rIndex}>
+								{[...Array(row.indentLevel)].map((_, index) => (
+									<span key={index} className={indent}></span>
+								))}
+
+								{row.chars.map((char, cIndex) => {
+									let isActive = rowIndex === rIndex && charIndex == cIndex;
+									let isReturn = char.value === String.fromCharCode(9166);
+									let classNames = "code-letter";
+
+									if (char.correct !== null) {
+										classNames += char.correct ? ` ${correct}` : ` ${incorrect}`;
+									} else {
+										classNames += ` ${untyped}`;
+									}
+
+									if (isActive) {
+										classNames += ` ${active}`;
+									}
+
+									if (!isActive && isReturn) {
+										return (
+											<span key={cIndex} className={`${classNames} ${hidden}`}>
+												{char.value}
+											</span>
+										);
+									} else {
+										return (
+											<span key={cIndex} className={classNames}>
+												{char.value}
+											</span>
+										);
+									}
+								})}
+							</div>
+						))}
+					</div>
+				</code>
+			)}
 
 			<input
 				autoFocus

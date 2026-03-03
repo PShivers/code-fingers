@@ -49,6 +49,53 @@
   width: 2ch;
 }
 
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.statsRow {
+  display: flex;
+  gap: 4rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statValue {
+  font-size: 4rem;
+  color: #ec7fff;
+  font-family: monospace;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: #596172;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.tryAgain {
+  background: none;
+  border: 1px solid #596172;
+  color: #f6f0e9;
+  padding: 0.4rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.tryAgain:hover {
+  border-color: #ec7fff;
+  color: #ec7fff;
+}
+
 @keyframes caretFlash {
   0% {
     opacity: 1;
