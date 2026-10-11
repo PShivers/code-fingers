@@ -1,48 +1,52 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance when working with code in this repository.
 
-## Commands
+## Environment & Commands
+
+- **Node version:** Node 20 LTS (Gatsby 5 requirement). If using NVM: `nvm use 20`.
 
 ```bash
 npm start          # Start dev server (gatsby develop)
-npm run build      # Production build
+npm run build      # Production build (gatsby build)
 npm run serve      # Serve production build locally
 npm run clean      # Clear Gatsby cache and output
 ```
 
-No linting or testing is configured.
-
 ## Architecture
 
-**Codexterity** is a Gatsby/React typing practice app for coding snippets, similar to MonkeyType but for code.
+**Codexterity** is a modern Gatsby/React typing practice platform for code snippets, inspired by MonkeyType but specifically tailored for software engineers.
 
-### Data Flow
+### Core Modules & Utilities
 
-`data.js` exports a `codeBlocks` array of JavaScript snippets. `src/pages/index.js` imports this and drives the entire typing experience via React hooks (`useState`, `useRef`).
+- **`data.js`** — Rich snippet database for 10 languages (`javascript`, `typescript`, `python`, `rust`, `go`, `c`, `cpp`, `csharp`, `java`, `sql`), categorized across `short`, `medium`, and `long` difficulties.
+- **`src/utils/syntax.js`** — Lightweight syntax tokenizer that maps code characters into syntax token types (`keyword`, `type`, `string`, `number`, `function`, `comment`, `operator`, `punctuation`, `plain`).
+- **`src/utils/themes.js`** — 10 developer themes (Codexterity, Monokai, One Dark Pro, Dracula, Tokyo Night, Nord, Catppuccin Mocha, Gruvbox, Cyberpunk, GitHub Dark) providing vibrant syntax colors and dimmed untyped variants.
+- **`src/utils/audio.js`** — Web Audio API mechanical keyboard sound engine with zero external dependencies (Clicky Blue, Thock Linear, Soft Bump, Mute).
+- **`src/utils/storage.js`** — User preferences and test history persistence with real-time multi-component synchronization via custom window events.
+- **`src/components/resultsChart.js`** — Interactive SVG performance chart visualizing WPM timeline curves and error markers.
 
-### Typing Engine (src/pages/index.js)
+### Typing Engine (`src/pages/index.js`)
 
-The core is a custom parsing + input-tracking system:
-
-- **`createCodeRows(codeBlock)`** — Parses a code block string into a 2D array of character objects `{ value, correct }`. Special markers:
-  - `^` = line break
-  - `~` = one indentation level (rendered as a spacer element)
-  - End of each row gets a return symbol (`String.fromCharCode(9166)`) that is hidden until that row is active
-- **Character state:** `correct: null` = untyped (gray), `true` = correct (off-white), `false` = incorrect (red)
-- **Active character** gets a blinking caret (pink `#ec7fff`)
-- **Input handling:** A hidden `<input>` field captures keypresses. `rowIndex` and `charIndex` track cursor position. Backspace uses `inputType === "deleteContentBackward"` to revert state.
-
-### Styling
-
-CSS Modules are used throughout (`*.module.css`). Global dark theme vars are set in `src/styles/global.css`:
-- Background: `#242933`
-- Correct text: `#f6f0e9`
-- Incorrect: `#ec4c56`
-- Caret: `#ec7fff`
+- **Tokenized Parsing (`createCodeRows`)**:
+  - `^` = newline break
+  - `~` = indentation level (rendered as auto-indent spacers)
+  - End of each row receives a return symbol (`⏎`)
+- **Interactive States**:
+  - Untyped characters render in their theme's dimmed syntax color.
+  - Correct keystrokes illuminate in vibrant syntax colors.
+  - Errors highlight in red with wavy underlines and audio buzz feedback.
+- **Modes**:
+  - `Snippets`: Standard code block practice.
+  - `30s Rush` / `60s Rush`: Time attack with continuous code snippets and accumulated metrics.
+  - `Custom`: Paste and practice any custom code snippet.
+- **Shortcuts**:
+  - `Tab`: Restart snippet / advance
+  - `Esc`: Skip snippet
+  - `Enter`: Advance line at return symbol or restart from results card
 
 ### Pages
 
-- `/` — Main typing interface
-- `/about` — About page
-- `/settings` — Settings page (placeholder, in development)
+- `/` — Main typing interface and toolbar
+- `/about` — About page and shortcut guide
+- `/settings` — Dedicated settings and history management dashboard

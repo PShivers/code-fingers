@@ -1,29 +1,85 @@
-# [Deployed site](https://codefingersmain.gatsbyjs.io/)
-
 # Codexterity
 
-Welcome to Codexterity, a project inspired by the wonderful site [Monkey Type](https://monkeytype.com/). While Monkey Type is a fantastic tool for improving typing skills, it may not provide a fully immersive experience for typing actual code. Codexterity aims to bridge that gap by offering a typing practice platform that is specifically tailored to code blocks.
+Welcome to **Codexterity**, a typing practice platform inspired by [Monkeytype](https://monkeytype.com/), tailored specifically for code.
 
-## The Goal
+While general typing apps test typing English literature, real programming involves constant usage of braces, brackets, semicolons, arrows, operators, indentation, and camelCase. Codexterity bridges that gap by offering a fully immersive code typing environment.
 
-The primary objective of Codexterity is to provide a typing practice environment that closely resembles the experience of coding. By focusing on code blocks, you can enhance your typing skills while also becoming more proficient at writing code. Whether you're a beginner seeking to improve your coding speed or an experienced developer looking to refine your skills, Codexterity is designed to help you level up your coding abilities.
+---
 
-<!-- ## Features -->
+## Features
 
-<!-- 1. **Realistic Code Blocks:** Codexterity offers a variety of code blocks sourced from real-world programming languages and frameworks. You'll encounter snippets ranging from simple statements to more complex code segments, providing a comprehensive typing experience across different programming languages. -->
+1. **10 Programming Languages**
+   Practice idiomatic code snippets in:
+   - **JavaScript**
+   - **TypeScript**
+   - **Python**
+   - **Rust**
+   - **Go**
+   - **C**
+   - **C++**
+   - **C#**
+   - **Java**
+   - **SQL**
 
-<!-- 2. **Syntax Highlighting:** To simulate the coding environment, Codexterity includes syntax highlighting for the code blocks. This feature ensures that you become familiar with the visual cues and color-coded representations commonly found in integrated development environments (IDEs) or text editors. -->
+2. **IDE Syntax Highlighting**
+   Code blocks are tokenized in real time. Untyped code is gently dimmed in syntax colors, illuminating vibrant IDE highlights as you type each correct character. Errors are highlighted with visual and audio feedback.
 
-<!-- 3. **Customizable Challenges:** Codexterity allows you to tailor your typing practice based on your preferences. You can choose specific programming languages, adjust the difficulty level, and even select the length and complexity of the code blocks you want to practice with. -->
+3. **10 Developer Themes**
+   Choose your favorite theme:
+   - Codexterity (Default)
+   - Monokai
+   - One Dark Pro
+   - Dracula
+   - Tokyo Night
+   - Nord
+   - Catppuccin Mocha
+   - Gruvbox Dark
+   - Cyberpunk 2077
+   - GitHub Dark
 
-<!-- 4. **Typing Metrics and Progress Tracking:** Keep track of your typing progress and improvement over time. Codexterity provides detailed statistics and metrics, including typing speed, accuracy, and areas for improvement. You can review your performance history, identify your strengths and weaknesses, and focus on specific areas to enhance your coding speed and accuracy. -->
-<!-- 
-5. **Compete and Challenge Friends:** Challenge your friends or join the Codexterity community in competitive typing sessions. Engage in friendly competitions, compare your typing speed with others, and strive to climb the leaderboards. Sharing achievements, participating in coding challenges, and collaborating with fellow coders can further enhance your typing and coding skills. -->
-<!-- 
-6. **Keyboard Shortcut Practice:** In addition to typing code blocks, Codexterity offers exercises to improve your familiarity with common keyboard shortcuts used in various programming environments. Mastering these shortcuts can significantly boost your coding efficiency and productivity. -->
+4. **Web Audio Mechanical Keyboard Sounds**
+   Synthesized switch acoustics without external audio asset downloads:
+   - **Clicky (Blue switches)**: Crisp, high-pitched mechanical click
+   - **Thock (Linear switches)**: Deep, resonant wooden bottom-out
+   - **Soft Bump**: Gentle tactile pop
+   - **Muted**: Silent typing
 
-## Get Started
+5. **Practice Modes & Difficulty Filters**
+   - **Code Blocks**: Standard snippet practice filtered by length: `Short`, `Medium`, or `Long`.
+   - **30s Rush / 60s Rush**: Time-attack challenges where you type continuous code snippets against the clock.
+   - **Custom Snippets**: Paste your own functions or code snippets to practice immediately.
 
-Ready to level up your typing and coding skills? Head over to Codexterity and start typing code blocks like never before. Whether you're a seasoned developer or just starting your coding journey, Codexterity provides an immersive experience to refine your typing abilities while honing your coding expertise.
+6. **Typing Metrics & Interactive Analytics**
+   - Net WPM & Raw WPM calculation
+   - Accuracy percentage
+   - Real-time SVG WPM timeline curve with error indicators
+   - Personal best tracking and celebratory badges
+   - LocalStorage history dashboard
 
-So, get those fingers ready, dive into the world of coding, and let Codexterity be your companion in becoming a faster and more efficient coder!
+7. **Quick Keyboard Shortcuts**
+   - `Tab` — Instant restart / next snippet
+   - `Esc` — Skip snippet
+   - `Enter` — Advance line at the return indicator (`⏎`) or restart on the results screen
+   - `Backspace` — Delete previous character and return across line breaks
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20 LTS (required for Gatsby 5)
+
+### Running Locally
+
+```bash
+# Install dependencies
+npm install
+
+# Start local dev server
+npm start
+
+# Or build and serve
+npm run build
+npm run serve
+```
